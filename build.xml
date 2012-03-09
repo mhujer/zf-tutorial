@@ -1,0 +1,25 @@
+<project name="zf-tutorial" default="main">
+    <target name="main">
+        <echo message="Phing works!"/>
+    </target>
+
+    <!-- Definice adresářů, níže na ně budu jen odkazovat -->
+    <fileset id="src" dir="${project.basedir}/application">
+        <include name="**/*.php"/>
+        <include name="**/*.phtml"/>
+    </fileset>
+    <fileset id="tests" dir="${project.basedir}/tests">
+        <include name="**/*.php"/>
+    </fileset>
+    <fileset id="library" dir="${project.basedir}/library">
+        <include name="**/*.php"/>
+    </fileset>
+
+    <target name="lint" description="Spoustí syntaktickou kontrolu souborů v uvedených adresářích">
+        <phplint haltonfailure="true">
+            <fileset refid="src"/>
+            <fileset refid="tests"/>
+            <fileset refid="library"/>
+        </phplint>
+    </target>
+</project>
