@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="cleanup, lint, phpcs" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="cleanup, lint, phpcs, apigen" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
@@ -37,5 +37,9 @@
             <formatter type="default" usefile="false"/>
             <formatter type="checkstyle" outfile="${project.basedir}/build/checkstyle-phpcs.xml"/>
         </phpcodesniffer>
+    </target>
+
+    <target name="apigen">
+        <exec command="apigen -s . -d build/docs --progressbar=no --report build/checkstyle-apigen.xml" dir="${project.basedir}" logoutput="true" />
     </target>
 </project>
