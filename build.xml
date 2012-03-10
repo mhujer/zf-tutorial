@@ -16,7 +16,7 @@
     </fileset>
 
     <target name="cleanup" description="Vyčistění workspace">
-        <delete dir="${project.basedir}/build" failonerror="false"/>
+        <delete dir="${project.basedir}/build"/>
     </target>
 
     <target name="prepare" depends="cleanup" description="Příprava workspace">
@@ -32,7 +32,7 @@
         </phplint>
     </target>
 
-    <target name="phpcs" depends="prepare">
+    <target name="phpcs" depends="prepare" description="Kontrola Coding standards">
         <phpcodesniffer standard="Zend">
             <fileset refid="src"/>
             <fileset refid="tests"/>
@@ -42,16 +42,20 @@
         </phpcodesniffer>
     </target>
 
-    <target name="apigen" depends="prepare">
+    <target name="apigen" depends="prepare" description="Generování dokumentace">
         <apigen source="${project.basedir}/application" destination="${project.basedir}/build/docs" report="${project.basedir}/build/checkstyle-apigen.xml"/>
     </target>
 
-    <target name="phpcpd" depends="prepare">
+    <target name="phpcpd" depends="prepare" description="Kontrola CPD">
         <phpcpd>
             <fileset refid="src"/>
             <fileset refid="tests"/>
             <fileset refid="library"/>
             <formatter type="pmd" outfile="${project.basedir}/build/pmd-cpd.xml"/>
         </phpcpd>
+    </target>
+
+    <target name="phploc" depends="prepare" description="Analýza PHPLOC">
+        <exec command="phploc --log-csv ${project.basedir}/build/phploc.csv ${project.basedir}/application" logoutput="true" />
     </target>
 </project>
