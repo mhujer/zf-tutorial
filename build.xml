@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc, pdepend" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
@@ -57,5 +57,14 @@
 
     <target name="phploc" depends="prepare" description="Analýza PHPLOC">
         <exec command="phploc --log-csv ${project.basedir}/build/phploc.csv ${project.basedir}/application" logoutput="true" />
+    </target>
+
+    <target name="pdepend" depends="prepare" description="Analýza nástrojem PDepend">
+        <phpdepend>
+            <fileset refid="src"/>
+            <logger type="jdepend-xml" outfile="${project.basedir}/build/jdepend.xml"/>
+            <logger type="jdepend-chart" outfile="${project.basedir}/build/dependencies.svg"/>
+            <logger type="overview-pyramid" outfile="${project.basedir}/build/overview-pyramid.svg"/>
+        </phpdepend>
     </target>
 </project>
