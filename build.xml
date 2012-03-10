@@ -1,11 +1,11 @@
-<project name="zf-tutorial" default="main">
-    <target name="main">
-        <echo message="Phing works!"/>
-    </target>
+<project name="zf-tutorial" default="build">
+    <target name="build" depends="cleanup, lint, phpcs" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
         <include name="**/*.php"/>
+    </fileset>
+    <fileset id="templates" dir="${project.basedir}/application">
         <include name="**/*.phtml"/>
     </fileset>
     <fileset id="tests" dir="${project.basedir}/tests">
@@ -15,11 +15,27 @@
         <include name="**/*.php"/>
     </fileset>
 
+    <target name="cleanup" description="Příprava workspace">
+        <delete dir="${project.basedir}/build"/>
+        <mkdir dir="${project.basedir}/build"/>
+    </target>
+
     <target name="lint" description="Spoustí syntaktickou kontrolu souborů v uvedených adresářích">
         <phplint haltonfailure="true">
             <fileset refid="src"/>
+            <fileset refid="templates"/>
             <fileset refid="tests"/>
             <fileset refid="library"/>
         </phplint>
+    </target>
+
+    <target name="phpcs">
+        <phpcodesniffer standard="Zend">
+            <fileset refid="src"/>
+            <fileset refid="tests"/>
+            <fileset refid="library"/>
+            <formatter type="default" usefile="false"/>
+            <formatter type="checkstyle" outfile="${project.basedir}/build/checkstyle-phpcs.xml"/>
+        </phpcodesniffer>
     </target>
 </project>
