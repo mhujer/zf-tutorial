@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="prepare, lint, phpcs, apigen" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
@@ -23,7 +23,7 @@
         <mkdir dir="${project.basedir}/build"/>
     </target>
 
-    <target name="lint" description="Spoustí syntaktickou kontrolu souborů v uvedených adresářích">
+    <target name="lint" depends="prepare" description="Spoustí syntaktickou kontrolu souborů v uvedených adresářích">
         <phplint haltonfailure="true">
             <fileset refid="src"/>
             <fileset refid="templates"/>
@@ -32,7 +32,7 @@
         </phplint>
     </target>
 
-    <target name="phpcs">
+    <target name="phpcs" depends="prepare">
         <phpcodesniffer standard="Zend">
             <fileset refid="src"/>
             <fileset refid="tests"/>
@@ -42,7 +42,16 @@
         </phpcodesniffer>
     </target>
 
-    <target name="apigen">
+    <target name="apigen" depends="prepare">
         <apigen source="${project.basedir}/application" destination="${project.basedir}/build/docs" report="${project.basedir}/build/checkstyle-apigen.xml"/>
+    </target>
+
+    <target name="phpcpd" depends="prepare">
+        <phpcpd>
+            <fileset refid="src"/>
+            <fileset refid="tests"/>
+            <fileset refid="library"/>
+            <formatter type="pmd" outfile="${project.basedir}/build/pmd-cpd.xml"/>
+        </phpcpd>
     </target>
 </project>
