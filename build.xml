@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
