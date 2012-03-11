@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc, pdepend, phpmd" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc, pdepend, phpmd, phpcb" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
@@ -73,5 +73,9 @@
             <fileset refid="src"/>
             <formatter type="xml" outfile="${project.basedir}/build/pmd.xml"/>
         </phpmd>
+    </target>
+
+    <target name="phpcb" depends="phpcs, phpcpd, phpmd" description="Vygeneruje souhrnný výstup chyb v kódu pomocí PHP_CodeBrowser">
+        <exec command="phpcb  --log ${project.basedir}/build --source ${project.basedir} --output ${project.basedir}/build/code-browser" logoutput="true" />
     </target>
 </project>
