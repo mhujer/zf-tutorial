@@ -1,0 +1,5 @@
+<testsuites>
+  <testsuite name="All">
+    <directory>library</directory>
+  </testsuite>
+</testsuites>
