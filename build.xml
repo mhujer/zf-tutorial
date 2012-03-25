@@ -1,5 +1,5 @@
 <project name="zf-tutorial" default="build">
-    <target name="build" depends="prepare, lint, phpcs, apigen, phpcpd, phploc, pdepend, phpmd, phpcb" description="Meta target, spouští ostatní targety"/>
+    <target name="build" depends="prepare, lint, phpunit, phpcs, apigen, phpcpd, phploc, pdepend, phpmd, phpcb" description="Meta target, spouští ostatní targety"/>
 
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
@@ -30,6 +30,15 @@
             <fileset refid="tests"/>
             <fileset refid="library"/>
         </phplint>
+    </target>
+
+    <target name="phpunit" depends="prepare" description="PHPUnit testy">
+        <phpunit printsummary="true" haltonfailure="true" haltonerror="true">
+            <formatter todir="${project.basedir}/build" outfile="phpunit-report.xml" type="xml"/>
+            <batchtest>
+                <fileset refid="tests"/>
+            </batchtest>
+        </phpunit>
     </target>
 
     <target name="phpcs" depends="prepare" description="Kontrola Coding standards">
