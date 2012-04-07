@@ -1,6 +1,6 @@
 <project name="zf-tutorial" default="build">
     <target name="build" depends="prepare, lint, phpunit, phpcs, apigen, phpcpd, phploc, pdepend, phpmd, phpcb" description="Meta target, spouští ostatní targety"/>
-
+    
     <!-- Definice adresářů, níže na ně budu jen odkazovat -->
     <fileset id="src" dir="${project.basedir}/application">
         <include name="**/*.php"/>
@@ -14,24 +14,24 @@
     <fileset id="library" dir="${project.basedir}/library">
         <include name="**/*.php"/>
     </fileset>
-
+    
     <target name="cleanup" description="Vyčistění workspace">
         <delete dir="${project.basedir}/build"/>
     </target>
-
+    
     <target name="prepare" depends="cleanup" description="Příprava workspace">
         <mkdir dir="${project.basedir}/build"/>
     </target>
-
-    <target name="lint" depends="prepare" description="Spoustí syntaktickou kontrolu souborů v uvedených adresářích">
-        <phplint haltonfailure="true">
+    
+    <target name="lint" description="Kontrola pomocí PHP Lint">
+        <phplint haltonfailure="true" level="info">
             <fileset refid="src"/>
             <fileset refid="templates"/>
             <fileset refid="tests"/>
             <fileset refid="library"/>
         </phplint>
     </target>
-
+    
     <target name="phpunit" depends="prepare" description="PHPUnit testy">
         <phpunit printsummary="true" haltonfailure="true" haltonerror="true">
             <formatter todir="${project.basedir}/build" outfile="phpunit-report.xml" type="xml"/>
@@ -40,34 +40,32 @@
             </batchtest>
         </phpunit>
     </target>
-
-    <target name="phpcs" depends="prepare" description="Kontrola Coding standards">
+    
+    <target name="phpcs" depends="prepare" description="Kontrola standardů pro psaní kódu">
         <phpcodesniffer standard="Zend">
             <fileset refid="src"/>
             <fileset refid="tests"/>
-            <fileset refid="library"/>
             <formatter type="default" usefile="false"/>
             <formatter type="checkstyle" outfile="${project.basedir}/build/checkstyle-phpcs.xml"/>
         </phpcodesniffer>
     </target>
-
+    
     <target name="apigen" depends="prepare" description="Generování dokumentace">
         <apigen source="${project.basedir}/application" destination="${project.basedir}/build/docs" report="${project.basedir}/build/checkstyle-apigen.xml"/>
     </target>
-
+    
     <target name="phpcpd" depends="prepare" description="Kontrola CPD">
         <phpcpd>
             <fileset refid="src"/>
             <fileset refid="tests"/>
-            <fileset refid="library"/>
             <formatter type="pmd" outfile="${project.basedir}/build/pmd-cpd.xml"/>
         </phpcpd>
     </target>
-
+    
     <target name="phploc" depends="prepare" description="Analýza PHPLOC">
         <exec command="phploc --log-csv ${project.basedir}/build/phploc.csv ${project.basedir}/application" logoutput="true" />
     </target>
-
+    
     <target name="pdepend" depends="prepare" description="Analýza nástrojem PDepend">
         <phpdepend>
             <fileset refid="src"/>
@@ -76,14 +74,15 @@
             <logger type="overview-pyramid" outfile="${project.basedir}/build/overview-pyramid.svg"/>
         </phpdepend>
     </target>
-
+    
     <target name="phpmd" depends="prepare" description="PMD analýza">
         <phpmd rulesets="${project.basedir}/phpmd.xml">
             <fileset refid="src"/>
+            <fileset refid="tests"/>
             <formatter type="xml" outfile="${project.basedir}/build/pmd.xml"/>
         </phpmd>
     </target>
-
+    
     <target name="phpcb" depends="phpcs, phpcpd, phpmd" description="Vygeneruje souhrnný výstup chyb v kódu pomocí PHP_CodeBrowser">
         <exec command="phpcb  --log ${project.basedir}/build --source ${project.basedir} --output ${project.basedir}/build/code-browser" logoutput="true" />
     </target>
